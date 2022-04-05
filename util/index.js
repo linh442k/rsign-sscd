@@ -2,20 +2,68 @@ const jwt = require("jsonwebtoken");
 const fs = require("fs");
 const crypto = require("crypto");
 
-const verifyToken = async (signature, certificate) => {
-  jwt.verify(signature, certificate, function (err, decoded) {
-    if (typeof decoded !== "undefined") {
+const verifyToken = (signature, certificate) => {
+  try {
+    var decoded = jwt.verify(signature, certificate);
+    // console.log(typeof decoded.data.id);
+    if (
+      typeof decoded.data.id === "undefined" ||
+      typeof decoded.data.teacherId === "undefined" ||
+      typeof decoded.data.teacherCertificate === "undefined" ||
+      typeof decoded.data.fileHash === "undefined" ||
+      typeof decoded.data.fileOriginalName === "undefined" ||
+      typeof decoded.data.docCount === "undefined" ||
+      typeof decoded.data.expiredAt === "undefined" ||
+      typeof decoded.data.createdAt === "undefined" ||
+      typeof decoded.data.salt === "undefined" ||
+      typeof decoded.data.params === "undefined"
+    ) {
+      return {
+        valid: false,
+        message: "Invalid Token Parameter",
+      };
+    } else
       return {
         valid: true,
         value: decoded,
       };
-    } else {
-      return {
-        valid: false,
-        message: err.message,
-      };
-    }
-  });
+  } catch (err) {
+    return {
+      valid: false,
+      message: err.message,
+    };
+  }
+
+  // jwt.verify(signature, certificate, function (err, decoded) {
+  //   if (typeof decoded !== "undefined") {
+  //     if (
+  //       typeof decoded.id === "undefined" ||
+  //       typeof decoded.teacherId === "undefined" ||
+  //       typeof decoded.teacherCertificate === "undefined" ||
+  //       typeof decoded.fileHash === "undefined" ||
+  //       typeof decoded.fileOriginalName === "undefined" ||
+  //       typeof decoded.docCount === "undefined" ||
+  //       typeof decoded.expiredAt === "undefined" ||
+  //       typeof decoded.createdAt === "undefined" ||
+  //       typeof decoded.salt === "undefined" ||
+  //       typeof decoded.params === "undefined"
+  //     ) {
+  //       return {
+  //         valid: false,
+  //         message: "Invalid Token Parameter",
+  //       };
+  //     } else
+  //       return {
+  //         valid: true,
+  //         value: decoded,
+  //       };
+  //   } else {
+  //     return {
+  //       valid: false,
+  //       message: err.message,
+  //     };
+  //   }
+  // });
 };
 
 const hashFile = (path) => {

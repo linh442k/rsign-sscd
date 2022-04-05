@@ -12,7 +12,6 @@ const {
   verifyToken,
 } = require("../util/index");
 
-console.log(path.join(__dirname, `..\\document\\wardrobe rebuild.docx`));
 var storage = multer.diskStorage({
   destination: function (req, file, callback) {
     callback(null, "./document");
@@ -215,17 +214,74 @@ router.post("/fetch-data", async (req, res) => {
 router.post("/sign", async (req, res) => {
   const certificate = Buffer.from(process.env.TEMP_PUBLIC_KEY);
   const signature = req.body.signToken;
-  const verifyResult = await verifyToken(certificate, signature);
+  const verifyResult = verifyToken(signature, certificate);
+  // console.log(verifyResult);
   if (verifyResult.valid) {
+    const {
+      id,
+      teacherId,
+      teacherCertificate,
+      fileHash,
+      fileOriginalName,
+      docCount,
+      expiredAt,
+      createdAt,
+      salt,
+      params,
+    } = verifyResult.value.data;
+    // console.log(verifyResult.value.data);
+    // return res.send("test");
+    const currentTime = Date.now();
+    try {
+      const signRequest = await SignRequest.find(
+        {
+          _id: ObjectId(id),
+          teacherId: teacherId,
+          teacherCertificate: teacherCertificate,
+          fileHash: fileHash,
+          fileOriginalName: fileOriginalName,
+          docCount: docCount,
+          expiredAt: expiredAt,
+          createdAt: createdAt,
+          salt: salt,
+          params: params,
+          signedAt: null,
+        },
+        {}
+      );
+      // return res.send(signRequest);
+      if (signRequest.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: "Request has been accepted before!",
+        });
+      }
+      // send sign request to hsm
+      try {
+        const updateSignRequest = await SignRequest.findByIdAndUpdate(id, {
+          signedAt: currentTime,
+        });
+        return res.json({
+          success: true,
+          message: "Sign Request Accepted",
+        });
+      } catch (e) {
+        console.error(e);
+        return res
+          .status(500)
+          .json({ success: false, message: "Internal Server Error" });
+      }
+    } catch (e) {
+      console.error(e);
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid Request" });
+    }
   } else {
     return res
       .status(400)
       .json({ success: false, message: verifyResult.message });
   }
-});
-
-router.get("/", async (req, res) => {
-  res.send("Hello");
 });
 
 module.exports = router;
