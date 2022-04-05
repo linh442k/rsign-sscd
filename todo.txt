@@ -1,0 +1,1 @@
+tách router fetch data ra 2 route riêng
