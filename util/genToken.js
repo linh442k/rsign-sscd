@@ -29,7 +29,7 @@ jpM+tWkcujE4shCHnhMVxh4=
 -----END PRIVATE KEY-----`;
 // console.log(privateKey);
 const data = {
-  id: "624c5e9feba7e48d33e29786",
+  id: "624c6dbb4eaf701c2e6838d5",
   teacherId: "123",
   teacherCertificate: {
     pk: "123",
@@ -45,13 +45,13 @@ const data = {
     "t%EF%BF%BDi%20li%EF%BF%BDu%201.docx",
   ],
   docCount: 3,
-  createdAt: "2022-04-05T15:21:40.891Z",
-  expiredAt: "2022-04-05T16:21:40.891Z",
+  createdAt: "2022-04-05T16:26:33.317Z",
+  expiredAt: "2022-04-05T17:26:33.317Z",
   params: null,
-  salt: "cae6cdfb5dad64ed4f3582800b33e49f17e1853ff1cb1a002a06bb9c01226067",
+  salt: "5a6fcdaa4c45a80bc40dbb39a0e11e3e19e6e8599cd3121557486b6ca4fc6488",
 };
 const token = jwt.sign(
-  { exp: Math.floor(Date.now() / 1000) + 60, data },
+  { exp: Math.floor(Date.now() / 1000) + 60 * 2, data },
   privateKey,
   { algorithm: "RS256" }
 );

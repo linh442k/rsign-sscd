@@ -234,6 +234,13 @@ router.post("/sign", async (req, res) => {
     // console.log(verifyResult.value.data);
     // return res.send("test");
     const currentTime = Date.now();
+    const expireTime = new Date(expiredAt);
+    if (expireTime.getTime() <= currentTime) {
+      return res.sendStatus(400).json({
+        success: false,
+        message: "Expired request!",
+      });
+    }
     try {
       const signRequest = await SignRequest.find(
         {
