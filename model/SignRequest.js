@@ -46,6 +46,10 @@ const SignRequestSchema = new Schema({
     type: String,
     default: "",
   },
+  keepFile: {
+    type: Boolean,
+    default: true,
+  },
   // status: {
   //   type: String,
   //   enum: ["PENDING", "SIGNED", "EXPIRED"],

@@ -5,16 +5,32 @@ const cors = require("cors");
 const morgan = require("morgan");
 const { authenticateRequest } = require("./middleware/index");
 const signRequestRouter = require("./route/signRequest");
-
+const deleteFile = require("./util/deleteSignedOrExpired");
+const CronJob = require("cron").CronJob;
 const app = express();
+
+connectDB();
+// delete file at 24h everyday
+const periodicallyDeleteFile = new CronJob(
+  "0 0 * * *",
+  deleteFile,
+  null,
+  true,
+  "Asia/Ho_Chi_Minh"
+);
+// periodicallyDeleteFile.start();
+// deleteFile();
+// app.get("/test", (req, res) => {
+//   deleteFile();
+//   return res.send("test");
+// });
+
 app.use(cors());
 app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 app.all("*", authenticateRequest);
 app.use("/api/sign-request", signRequestRouter);
-
-connectDB();
 
 const PORT = process.env.PORT || 8000;
 

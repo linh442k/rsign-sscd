@@ -77,7 +77,7 @@ const hashFile = (path) => {
 const delFile = (path) => {
   fs.unlink(path, (err) => {
     if (err) {
-      console.error(err);
+      console.log(err.message);
       return false;
     }
     // console.log("del files successfully");

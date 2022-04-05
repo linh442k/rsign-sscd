@@ -29,26 +29,26 @@ jpM+tWkcujE4shCHnhMVxh4=
 -----END PRIVATE KEY-----`;
 // console.log(privateKey);
 const data = {
-  id: "624bf1ea71b7897af1fa6f3d",
+  id: "624c5e9feba7e48d33e29786",
   teacherId: "123",
   teacherCertificate: {
     pk: "123",
   },
   fileHash: [
-    "2af0b5690422e310245514668658c002fa58c4b307fd20c492a44b5e93c0fc2a",
-    "959f7559782801184d11ec48a9868bb608b10fe2b1712c0b2bfda211647bf142",
-    "dfdaf5680f62d95ed3e6c2afb2a0d00a21b405e7b0e8184a593abe85bad89c00",
+    "29e5dee2f10305de8834fde9466a9232e2603c942c8910258108e1ff31cd097a",
+    "686b08c77ae43611e7fad7ffdd20338a739abf6ee298a8727e7866c51505cabd",
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
   ],
   fileOriginalName: [
-    "temp.docx",
-    "tips%20giao%20ti%EF%BF%BDp.txt",
-    "wardrobe%20rebuild.docx",
+    "B%EF%BF%BDn%20sao%20c%EF%BF%BDa%20KHMT-Project%202.%20Vi%20Minh%20Hi%EF%BF%BDu.%202020.docx.pdf",
+    "B%EF%BF%BDn%20sao%20c%EF%BF%BDa%20KHMT-Project%203.%20Nguy%EF%BF%BDn%20Lan%20Anh.%2020202.docx.pdf",
+    "t%EF%BF%BDi%20li%EF%BF%BDu%201.docx",
   ],
   docCount: 3,
-  createdAt: "2022-04-05T07:38:14.277Z",
-  expiredAt: "2022-04-05T08:38:14.277Z",
+  createdAt: "2022-04-05T15:21:40.891Z",
+  expiredAt: "2022-04-05T16:21:40.891Z",
   params: null,
-  salt: "a2b75a7174fed0757ee2ee0824a32004a63e128734a61b88ff1b1e25aadf2b30",
+  salt: "cae6cdfb5dad64ed4f3582800b33e49f17e1853ff1cb1a002a06bb9c01226067",
 };
 const token = jwt.sign(
   { exp: Math.floor(Date.now() / 1000) + 60, data },

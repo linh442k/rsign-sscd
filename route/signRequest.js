@@ -203,12 +203,14 @@ router.post("/fetch-data", async (req, res) => {
           .json({ success: false, message: "Internal server error" });
       }
     } else {
-      res.status(400).json({ success: false, message: "Invalid Parameter(s)" });
+      res
+        .status(400)
+        .json({ success: false, message: "Invalid Request Parameter(s)" });
     }
   }
   // user id
   // status ==> all
-  // specific id ==> download file
+  // specific request id + index ==> download file
 });
 
 router.post("/sign", async (req, res) => {
@@ -256,7 +258,8 @@ router.post("/sign", async (req, res) => {
           message: "Request has been accepted before!",
         });
       }
-      // send sign request to hsm
+      // send sign request/file to hsm
+      // then del file?
       try {
         const updateSignRequest = await SignRequest.findByIdAndUpdate(id, {
           signedAt: currentTime,
@@ -275,7 +278,7 @@ router.post("/sign", async (req, res) => {
       console.error(e);
       return res
         .status(400)
-        .json({ success: false, message: "Invalid Request" });
+        .json({ success: false, message: "Invalid Request Parameter(s)" });
     }
   } else {
     return res
