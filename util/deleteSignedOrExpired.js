@@ -2,7 +2,7 @@ const SignRequest = require("../model/SignRequest");
 const { delFile } = require("./index");
 
 const deleteFilePeriodically = async () => {
-  console.log("delete file");
+  console.log("delete file periodically");
   const currentTime = Date.now();
   try {
     const deleteFileList = await SignRequest.find(

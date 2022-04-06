@@ -19,6 +19,9 @@ var storage = multer.diskStorage({
   filename: function (req, file, callback) {
     callback(null, uniqueFileNameGen(file.originalname));
   },
+  // originalname: function (req, file, callback) {
+  //   callback(null, encodeURI(file.originalname));
+  // },
 });
 const handleFileUpload = multer({ storage: storage });
 
@@ -35,9 +38,9 @@ router.post("/create", handleFileUpload.array("files"), async (req, res) => {
   const fileLocation = req.files.map((file) => file.path);
   const teacherCertificate = { pk: "123" };
   const salt = saltGen(32);
-  const fileOriginalName = req.files.map((file) =>
-    encodeURI(file.originalname)
-  );
+  const fileOriginalName = req.files.map((file) => {
+    encodeURI(file.originalname);
+  });
 
   try {
     const newSignRequest = new SignRequest({
@@ -70,7 +73,17 @@ router.post("/fetch-data", async (req, res) => {
   const signRequestId =
     typeof req.body.signRequestId !== "undefined" ? req.body.signRequestId : "";
   const fileIndex =
-    typeof req.body.fileIndex !== "undefined" ? req.body.fileIndex : "";
+    typeof req.body.fileIndex !== "undefined" ? req.body.fileIndex : -1;
+  const skipIndex =
+    typeof req.body.skipIndex !== "undefined" ? req.body.skipIndex : 0;
+  const limitIndex =
+    typeof req.body.limitIndex !== "undefined" ? req.body.limitIndex : 5;
+  const sortByCreated =
+    typeof req.body.sortByCreated !== "undefined"
+      ? req.body.sortByCreated === -1
+        ? -1
+        : 1
+      : 1;
   // console.log(teacherId, status, signRequestId, "abc");
   // console.log(req.body);
   if (status === "PENDING") {
@@ -94,7 +107,10 @@ router.post("/fetch-data", async (req, res) => {
           params: 1,
           salt: 1,
         }
-      );
+      )
+        .sort({ createdAt: sortByCreated })
+        .skip(skipIndex)
+        .limit(limitIndex);
       res.json({ success: true, requests: pendingRequests });
     } catch (e) {
       console.log(e);
@@ -123,7 +139,10 @@ router.post("/fetch-data", async (req, res) => {
           // params: 1,
           // salt: 1,
         }
-      );
+      )
+        .sort({ createdAt: sortByCreated })
+        .skip(skipIndex)
+        .limit(limitIndex);
       res.json({ success: true, requests: expiredRequests });
     } catch (e) {
       console.log(e);
@@ -151,7 +170,10 @@ router.post("/fetch-data", async (req, res) => {
           // params: 1,
           // salt: 1,
         }
-      );
+      )
+        .sort({ createdAt: sortByCreated })
+        .skip(skipIndex)
+        .limit(limitIndex);
       res.json({ success: true, requests: signedRequests });
     } catch (e) {
       console.log(e);
@@ -160,7 +182,7 @@ router.post("/fetch-data", async (req, res) => {
         .json({ success: false, message: "Internal server error" });
     }
   } else {
-    if (signRequestId !== "" && fileIndex !== "") {
+    if (signRequestId !== "" && fileIndex !== -1) {
       const currentTime = Date.now();
       try {
         const request = await SignRequest.find(
@@ -175,7 +197,7 @@ router.post("/fetch-data", async (req, res) => {
             expiredAt: 1,
           }
         );
-        console.log(request);
+        // console.log(request);
         if (
           request[0].signedAt !== null ||
           request[0].expiredAt <= currentTime
@@ -193,7 +215,6 @@ router.post("/fetch-data", async (req, res) => {
           res.sendFile(
             path.join(__dirname, `..\\` + request[0].fileLocation[fileIndex])
           );
-
           return;
         }
       } catch (e) {
