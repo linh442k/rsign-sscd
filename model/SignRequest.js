@@ -9,6 +9,7 @@ const SignRequestSchema = new Schema({
   teacherCertificate: {
     type: Object,
     required: true,
+    default: {},
   },
   fileHash: {
     type: [String],

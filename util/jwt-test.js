@@ -1,0 +1,66 @@
+const jwt = require("jsonwebtoken");
+const data = require("../../data");
+const fs = require("fs");
+
+// var privateKey = fs.readFileSync("prvkey.txt");
+var privateKey = `-----BEGIN PRIVATE KEY-----
+MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQCs0z0LaM7remFN
+kKiZ2TyPN1UApLnX07Two16ECCx+Ie8JV8GSjglUcnRAuXtcpwvD11iTwIEi4hM+
+NZI0RaBQro9OXNS7VP3IAGBWAl86q2vSt5F3PnHT/0994+J7fmApQrocszMA96as
+mQaybWV5fH3nmE1N8s9Ki/8zvAswfFgqc7TcK6A50u/UtQsfc3lzSUy6o1Lkhw5A
+wSVZhy+F9fJ1UIPQn+XIg+1o+R3Q4NVecfZ74qJSK3FNaXRB7kIxvu2AWwnxPTLE
+apS1jBSEBGb9KWCMR+Pxkd9oxxszQ8QXdJvT0hx0injEdNzkA9IJmeoe0kj0Alyr
++c2IqDGPAgMBAAECggEBAKQ7IHllIaz34Ntaqj15CGl4RViVMN1+GyXJuZlyQwWh
+rYuNTy+7tfX/xaV0HVyQiUeTrmLJvm2ttGebdNIjkBLbrubipG1YeMnEQce5/VC9
+cXsOYjeUqYqxxZJ2KdT85NiQxldbmw5CSKsfyBNqjdGCkgqw2lVGdeH7Y4qAGYn6
+L1iI8Yl+3ajQowJXD8FTzB9N6L3d1HnaBOXFYOTalNshHZEeicKpLbrZdKD5Qcjl
+FyDVPuxQD4EgBu+JowI3jBvr7siBiLo+ALoW08+sR63Fddu/n+KdJQ/CDvM1ku9i
+3fYx7QcUw7jOlol2oCfaJvvGzTbbZE9yK61zypdYoWECgYEA3imtnK+hoJ+BE1Sd
+xXaHabY8FU0ItydkYWgcv6Y8I5lAp8CcCt0zfD0G5I2oUlGeI+pAj9y696PCRoTv
+G1ag/JaLHWMWIlJ6DizucsW2JhGfSzQUeRcJ4DWDnNTSdemwh7F/9gGL7+x6DK59
+M4wkrndSVQ0Y4FJSwBv6s8X/QxkCgYEAxyXXjlPJERcy1+zj1wJUW5+1xHSfW9po
+u7HSDho9vvFHfqvPJ6V/w21aU6r5tGDjRx8FEJ8cG8Rrv5J8p76gI+jkgAehMN86
+3UOjgRp6ifvKjSzwQWnTtSLdjgTKG8rFqt7TAGYAclbohwSsZ/uUQ9kfYoCE1moA
+dmSbb1BSlucCgYBhdYsx52JSImbvYflsfJje6RDmj0q5flBs4s1pzbUoMLzKWpaZ
+tXw2jlcNwI8Mvb1QKB12fvCOXoqFgR+bsJ8i76/LjoJRQDlHKrLYKp/Dh4uH5Crv
+DApLD27TSBGjpIbKoDVwaDFJaUYJdip6iIo29yVpJju5fKPMnvmWD8/xUQKBgQCM
+OJ/zLhl3+C6rjLfMT26YaPbyUe9XHIz8A7PUjDOHu5nMniqpTsWME/YyzUMu971v
++W52iqGfB4mahQlSj01wm24wm66qm7N10kdRAxTfDTRMfSTZ2irf8qGver3YHcla
+i7RkJm4QFBN75hWCzchSkZGgqL9fvZl/w00SbqsIZwKBgQCG20abjeZQMOosxedr
+zNq7NVNLNMG7ubmvs67VrNa3Xlv7McCxc4bpPF2cE+liTnPxtWZMXOY685FOm+2n
+2Bda8davw1HU/SUMebgUZsEgpJyqu6SzvNkbHk/lY9ibBSXdA06PkRL5av2WZHYA
+yBNWVQRGc3nZf9k2fvnkI5ZIcA==
+-----END PRIVATE KEY-----`;
+var token = jwt.sign(
+  { exp: Math.floor(Date.now() / 1000) + 60 * 30, name: "linh1", ...data },
+  privateKey,
+  { algorithm: "RS256" }
+);
+console.log(token);
+
+var signature = `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDg2MTAwNjQsIm5hbWUiOiJsaW5oIiwiY2xhc3MiOiJpY3QwMSIsImlhdCI6MTY0ODYwNjQ2NH0.Q61PUk0JvrpBVcW6jlgU1QZyqv44XNdCJkhWXIDBuL2Zw4slqMb0zSsKEtcno8N2YqIgY-isFFr_U2NeWMpblXS904UquX4bvcBn9_twrEcu6LHr2euKz2k5J3P7dq72c3dbSxW4NlY3NGevp9WXgGYjKDk-wanMdyZs4qe5icknoNXP9apSCtbThFOs73MAsmgSyPaFWtpwSZTgEJFvp0f1bK-KxsuXuAuFb48GplZw3d4u-FKmPjLbhNIhlrmN2aqJ8rojU7GfN1lhq8iQsd2Gs6bcMIx-mKil823YUilk9K2wE7LKiC29GEe6otP5in42Jb_S3Dpx8WvJQn1i8A`;
+
+var signature1 = `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDg2MTAzODgsIm5hbWUiOiJsaW5oIiwiY2xhc3MiOiJpY3QwMSIsImlhdCI6MTY0ODYwNjc4OH0.RQDuLrkC-eLGFWfWjoNEWils-qFVsYp3FmksY47G9N3I1N86uK55qOOwHo8wgfncioNSFIWco0vMsBjK82JszOSuRVM1My-Ktd4tHa9nU-vzy4jqTjL7quXI_3W9FaZHPFVRZrUfY2grzIjR7H27xN9D5wdxUFGTTh-sfBo4bQIolPJ8G2N7m5pSBjePE47NDOMD0SvkyB2l5NY0QW7komVYBXUF_MQR2apfHLDwIDVCvsBno_bS5D4EULH8eCB6yl5H9Gl9lYGLZ3l6YQ3vuiOz6jH1sMnv-x3wtIS0yc7gy8Tx69ismQKVeC6cctWzmfiyfkRlwPdOZ_u_UMlAwQ`;
+
+var sign_exp =
+  "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDkyNDAwNTcsIm5hbWUiOiJsaW5oIiwiY2xhc3MiOiJpY3QwMSIsImlhdCI6MTY0OTIzODI1N30.UWGT7iZtMzmecvRSX3U4qsoqZJhkkzAu9d_31rifUANfU71_OR0gR_ug2WvxdcFr7vRNqu-3j-m7_zqx-UlrTqTccvM_eZi-9K2gPqw1aPZfCNS-XJ_QIQryNee_E1SQry8UYpf-ebt4NDDwCab9yiS4oNMAp_bkNZ_k8FL4tqNbH8mdGTmvcesb2IRw-tCc9BKaot5o5FBPJAi4f3fCzzTrGTLBj2K2AFpjQRc7gvjT6rJxi88MiJL6meOXisRhERWezPiqSlh6k4eIMhlHICHaYyUv-UlBygbvzR4VRoui-I4HWNEtVha9IVSIDWY5Vwzs53QCgVXzCAAuqWIGxA";
+
+var new_sign = `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDg2MjY1ODEsIm5hbWUiOiJsaW5oIiwiY2xhc3MiOiJpY3QwMSIsImlhdCI6MTY0ODYyMjk4MX0.bMLp4_f7JxP-txhQq7qupGhXADpGyuHwt1kF1-ZQAwPC_yQ1Ib76WNHPnED5rtkHA7bbTg8eQtipHaaqZss-407xBvMsxYtu6VVjVjwXFz-71SUdGSQPi6LqvHfOpil3wScWmkhsg2pMWXhp7eDw3-R4sv-WqpDxdSWvWrpDTsj-7ujYHah1X0kIO7jBPT-LuP-W76mnAO35y0mTAWlfsgrx3g07-5qivwn34pWV_kU8vDlwTIVbvJSiGcBpK79awK9tfMVZZvMCjyBUCGVd0X6O56d8mqubuyT5AibH3RG-nWSv2CUVd2Dgau4PO1jnBppBenQzRbiakC7YHz0jvw`;
+// verify a token asymmetric
+// var cert = fs.readFileSync("pubkey.txt"); // get public key
+var cert = Buffer.from(
+  `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArNM9C2jO63phTZComdk8
+jzdVAKS519O08KNehAgsfiHvCVfBko4JVHJ0QLl7XKcLw9dYk8CBIuITPjWSNEWg
+UK6PTlzUu1T9yABgVgJfOqtr0reRdz5x0/9PfePie35gKUK6HLMzAPemrJkGsm1l
+eXx955hNTfLPSov/M7wLMHxYKnO03CugOdLv1LULH3N5c0lMuqNS5IcOQMElWYcv
+hfXydVCD0J/lyIPtaPkd0ODVXnH2e+KiUitxTWl0Qe5CMb7tgFsJ8T0yxGqUtYwU
+hARm/SlgjEfj8ZHfaMcbM0PEF3Sb09IcdIp4xHTc5APSCZnqHtJI9AJcq/nNiKgx
+jwIDAQAB
+-----END PUBLIC KEY-----`,
+  "utf-8"
+);
+jwt.verify(sign_exp, cert, function (err, decoded) {
+  console.log(decoded);
+  console.log(err === null ? err : err.message);
+});

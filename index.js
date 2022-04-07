@@ -11,19 +11,15 @@ const app = express();
 
 connectDB();
 // delete file at 24h everyday
-const periodicallyDeleteFile = new CronJob(
-  "0 0 * * *",
-  deleteFile,
-  null,
-  true,
-  "Asia/Ho_Chi_Minh"
-);
+// const periodicallyDeleteFile = new CronJob(
+//   "* * * * *",
+//   deleteFile,
+//   null,
+//   true,
+//   "Asia/Ho_Chi_Minh"
+// );
 // periodicallyDeleteFile.start();
 // deleteFile();
-// app.get("/test", (req, res) => {
-//   deleteFile();
-//   return res.send("test");
-// });
 
 app.use(cors());
 app.use(express.json());

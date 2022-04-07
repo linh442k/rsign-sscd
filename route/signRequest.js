@@ -35,13 +35,22 @@ router.post("/create", handleFileUpload.array("files"), async (req, res) => {
   const teacherId = req.body.teacherId;
   const fileHash = req.files.map((file) => hashFile(file.path));
   const docCount = req.files.length;
+  const params =
+    typeof req.body.params !== "undefined" ? JSON.parse(req.body.params) : null;
   const fileLocation = req.files.map((file) => file.path);
-  const teacherCertificate = { pk: "123" };
+  const teacherCertificate =
+    typeof req.body.teacherCertificate !== "undefined"
+      ? JSON.parse(req.body.teacherCertificate)
+      : {};
   const salt = saltGen(32);
-  const fileOriginalName = req.files.map((file) => {
-    encodeURI(file.originalname);
-  });
-
+  // const fileOriginalName = req.files.map((file) => {
+  //   encodeURI(file.originalname);
+  // });
+  const fileOriginalName = [];
+  for (var i = 0; i < docCount; i++) {
+    fileOriginalName.push(encodeURI(req.files[0].originalname));
+  }
+  console.log(fileOriginalName);
   try {
     const newSignRequest = new SignRequest({
       teacherId,
@@ -51,6 +60,7 @@ router.post("/create", handleFileUpload.array("files"), async (req, res) => {
       docCount,
       salt,
       fileOriginalName,
+      params,
     });
     await newSignRequest.save();
     res.json({
@@ -61,8 +71,6 @@ router.post("/create", handleFileUpload.array("files"), async (req, res) => {
     console.log(e);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
-
-  //   res.send("end");
 });
 
 router.post("/fetch-data", async (req, res) => {

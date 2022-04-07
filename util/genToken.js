@@ -29,26 +29,22 @@ jpM+tWkcujE4shCHnhMVxh4=
 -----END PRIVATE KEY-----`;
 // console.log(privateKey);
 const data = {
-  id: "624c6dbb4eaf701c2e6838d5",
-  teacherId: "123",
+  id: "624d4f73aac2610558db41bc",
+  teacherId: "1235",
   teacherCertificate: {
     pk: "123",
   },
   fileHash: [
     "29e5dee2f10305de8834fde9466a9232e2603c942c8910258108e1ff31cd097a",
     "686b08c77ae43611e7fad7ffdd20338a739abf6ee298a8727e7866c51505cabd",
-    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "0eb6c1155dcc06eb465d6b948e549d400a88d82c4cdfbf1182f2b400480907de",
   ],
-  fileOriginalName: [
-    "B%EF%BF%BDn%20sao%20c%EF%BF%BDa%20KHMT-Project%202.%20Vi%20Minh%20Hi%EF%BF%BDu.%202020.docx.pdf",
-    "B%EF%BF%BDn%20sao%20c%EF%BF%BDa%20KHMT-Project%203.%20Nguy%EF%BF%BDn%20Lan%20Anh.%2020202.docx.pdf",
-    "t%EF%BF%BDi%20li%EF%BF%BDu%201.docx",
-  ],
+  fileOriginalName: [null, null, null],
   docCount: 3,
-  createdAt: "2022-04-05T16:26:33.317Z",
-  expiredAt: "2022-04-05T17:26:33.317Z",
-  params: null,
-  salt: "5a6fcdaa4c45a80bc40dbb39a0e11e3e19e6e8599cd3121557486b6ca4fc6488",
+  createdAt: "2022-04-06T08:27:27.092Z",
+  expiredAt: "2022-04-06T09:27:27.092Z",
+  params: "test",
+  salt: "e009854963c7644b7c2c997305b6793637e91e4446a425209245b0be1e5c27ff",
 };
 const token = jwt.sign(
   { exp: Math.floor(Date.now() / 1000) + 60 * 2, data },
