@@ -48,7 +48,7 @@ router.post("/create", handleFileUpload.array("files"), async (req, res) => {
   // });
   const fileOriginalName = [];
   for (var i = 0; i < docCount; i++) {
-    fileOriginalName.push(encodeURI(req.files[0].originalname));
+    fileOriginalName.push(encodeURI(req.files[i].originalname));
   }
   console.log(fileOriginalName);
   try {

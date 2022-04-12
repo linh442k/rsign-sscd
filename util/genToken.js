@@ -29,22 +29,32 @@ jpM+tWkcujE4shCHnhMVxh4=
 -----END PRIVATE KEY-----`;
 // console.log(privateKey);
 const data = {
-  id: "624d4f73aac2610558db41bc",
+  id: "62552341d9a1291dcea14a92",
   teacherId: "1235",
   teacherCertificate: {
     pk: "123",
+    params: {
+      roles: ["Signer"],
+    },
   },
   fileHash: [
     "29e5dee2f10305de8834fde9466a9232e2603c942c8910258108e1ff31cd097a",
     "686b08c77ae43611e7fad7ffdd20338a739abf6ee298a8727e7866c51505cabd",
-    "0eb6c1155dcc06eb465d6b948e549d400a88d82c4cdfbf1182f2b400480907de",
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
   ],
-  fileOriginalName: [null, null, null],
+  fileOriginalName: [
+    "B%EF%BF%BDn%20sao%20c%EF%BF%BDa%20KHMT-Project%202.%20Vi%20Minh%20Hi%EF%BF%BDu.%202020.docx.pdf",
+    "B%EF%BF%BDn%20sao%20c%EF%BF%BDa%20KHMT-Project%202.%20Vi%20Minh%20Hi%EF%BF%BDu.%202020.docx.pdf",
+    "B%EF%BF%BDn%20sao%20c%EF%BF%BDa%20KHMT-Project%202.%20Vi%20Minh%20Hi%EF%BF%BDu.%202020.docx.pdf",
+  ],
   docCount: 3,
-  createdAt: "2022-04-06T08:27:27.092Z",
-  expiredAt: "2022-04-06T09:27:27.092Z",
-  params: "test",
-  salt: "e009854963c7644b7c2c997305b6793637e91e4446a425209245b0be1e5c27ff",
+  createdAt: "2022-04-12T06:57:30.440Z",
+  expiredAt: "2022-04-12T07:57:30.440Z",
+  params: {
+    a: 12,
+    b: "36",
+  },
+  salt: "71fdfc7be2a85146804461eb5b0d767d05ba6e7fcf088af3ea44aab70db823f7",
 };
 const token = jwt.sign(
   { exp: Math.floor(Date.now() / 1000) + 60 * 2, data },
