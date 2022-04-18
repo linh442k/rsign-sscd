@@ -5,7 +5,11 @@ const cors = require("cors");
 const morgan = require("morgan");
 const { authenticateRequest } = require("./middleware/index");
 const signRequestRouter = require("./route/signRequest");
-const deleteFile = require("./util/deleteSignedOrExpired");
+const testRouter = require("./route/test");
+const {
+  deleteFileByTeacherId,
+  deleteFilePeriodically,
+} = require("./util/deleteSignedOrExpired");
 const CronJob = require("cron").CronJob;
 const app = express();
 
@@ -13,13 +17,14 @@ connectDB();
 // delete file at 24h everyday
 // const periodicallyDeleteFile = new CronJob(
 //   "* * * * *",
-//   deleteFile,
+//   deleteFilePeriodically,
 //   null,
 //   true,
 //   "Asia/Ho_Chi_Minh"
 // );
 // periodicallyDeleteFile.start();
 // deleteFile();
+setTimeout(() => deleteFileByTeacherId("linh"), 2000);
 
 app.use(cors());
 app.use(express.json());
@@ -27,6 +32,8 @@ app.use(express.json());
 app.use(morgan("dev"));
 app.all("*", authenticateRequest);
 app.use("/api/sign-request", signRequestRouter);
+
+app.use("/test", testRouter);
 
 const PORT = process.env.PORT || 8000;
 

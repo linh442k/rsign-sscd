@@ -21,8 +21,15 @@ const deleteFilePeriodically = async () => {
     const fileList = [].concat(
       ...deleteFileList.map((list) => list.fileLocation)
     );
-    console.log(fileList);
-    fileList.map((file) => delFile(file));
+    const newFileList = [].concat(
+      ...fileList.map((item) => {
+        if (item.split(".").pop() !== "pdf") {
+          return [item, item + ".pdf"];
+        } else return item;
+      })
+    );
+    console.log(newFileList);
+    newFileList.map((file) => delFile(file));
     // return deleteFileList;
     try {
       const updateFileList = await SignRequest.updateMany(
@@ -48,4 +55,64 @@ const deleteFilePeriodically = async () => {
   }
 };
 
-module.exports = deleteFilePeriodically;
+const deleteFileByTeacherId = async (id = "") => {
+  console.log("delete file by id " + id);
+  const currentTime = Date.now();
+  try {
+    const deleteFileList = await SignRequest.find(
+      {
+        $or: [
+          { teacherId: id, signedAt: { $ne: null }, keepFile: true },
+          {
+            teacherId: id,
+            signedAt: null,
+            expiredAt: { $lte: currentTime },
+            keepFile: true,
+          },
+        ],
+      },
+      {
+        fileLocation: 1,
+        _id: 0,
+      }
+    );
+    // console.log(deleteFileList.map((list) => list.fileLocation));
+    const fileList = [].concat(
+      ...deleteFileList.map((list) => list.fileLocation)
+    );
+    const newFileList = [].concat(
+      ...fileList.map((item) => {
+        if (item.split(".").pop() !== "pdf") {
+          return [item, item + ".pdf"];
+        } else return item;
+      })
+    );
+    console.log(newFileList);
+    newFileList.map((file) => delFile(file));
+    // return deleteFileList;
+    try {
+      const updateFileList = await SignRequest.updateMany(
+        {
+          $or: [
+            { teacherId: id, signedAt: { $ne: null }, keepFile: true },
+            {
+              teacherId: id,
+              signedAt: null,
+              expiredAt: { $lte: currentTime },
+              keepFile: true,
+            },
+          ],
+        },
+        {
+          keepFile: false,
+        }
+      );
+    } catch (e) {
+      console.error(e);
+    }
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+module.exports = { deleteFilePeriodically, deleteFileByTeacherId };

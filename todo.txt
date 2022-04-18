@@ -1,8 +1,0 @@
-tách router fetch data ra 2 route riêng
-
-xoa file expired hoac signed
-
-skip + limit + sort by
-pending: createdAt
-expired: createdAt + expiredAt
-signed: createdAt + signedAt

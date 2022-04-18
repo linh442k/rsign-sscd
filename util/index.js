@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
+const path = require("path");
 const crypto = require("crypto");
+const { PDFNet } = require("@pdftron/pdfnet-node");
 
 const verifyToken = (signature, certificate) => {
   try {
@@ -77,7 +79,7 @@ const hashFile = (path) => {
 const delFile = (path) => {
   fs.unlink(path, (err) => {
     if (err) {
-      console.log(err.message);
+      // console.log(err.message);
       return false;
     }
     // console.log("del files successfully");
@@ -135,6 +137,47 @@ const saltGen = (byte = 64) => {
   return crypto.randomBytes(byte).toString("hex");
 };
 
+const convertMSOfficeToPDF = async (fileName) => {
+  const filePath = path.join(__dirname, `..\\` + fileName);
+  const outputPath = path.resolve(__dirname, `../${fileName}.pdf`);
+
+  const convertToPdf = async () => {
+    const pdfdoc = await PDFNet.PDFDoc.create();
+    await pdfdoc.initSecurityHandler();
+    await PDFNet.Convert.toPdf(pdfdoc, filePath);
+    pdfdoc.save(outputPath, PDFNet.SDFDoc.SaveOptions.e_linearized);
+  };
+  const res = await PDFNet.runWithCleanup(
+    convertToPdf,
+    process.env.PDFTRON_DEMO_KEY
+  )
+    .then(() => {
+      PDFNet.shutdown();
+      return {
+        success: true,
+        newFilePath: outputPath,
+      };
+      // fs.readFile(outputPath, (err, data) => {
+      //   if (err) {
+      //     console.log(err);
+      //     res.status(500).end();
+      //   } else {
+      //     res.setHeader("ContentType", "application/pdf");
+      //     res.end(data);
+      //   }
+      // });
+    })
+    .catch((e) => {
+      // console.log(e);
+      // res.status(500).end();
+      return {
+        success: false,
+        message: e,
+      };
+    });
+  return res;
+};
+
 module.exports = {
   verifyToken,
   delFile,
@@ -142,4 +185,5 @@ module.exports = {
   validateSignRequest,
   uniqueFileNameGen,
   saltGen,
+  convertMSOfficeToPDF,
 };

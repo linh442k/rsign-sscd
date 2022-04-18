@@ -4,12 +4,14 @@ const SignRequest = require("../model/SignRequest");
 const ObjectId = require("mongodb").ObjectID;
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
 const {
   uniqueFileNameGen,
   validateSignRequest,
   hashFile,
   saltGen,
   verifyToken,
+  convertMSOfficeToPDF,
 } = require("../util/index");
 
 var storage = multer.diskStorage({
@@ -50,7 +52,7 @@ router.post("/create", handleFileUpload.array("files"), async (req, res) => {
   for (var i = 0; i < docCount; i++) {
     fileOriginalName.push(encodeURI(req.files[i].originalname));
   }
-  console.log(fileOriginalName);
+  // console.log(fileOriginalName);
   try {
     const newSignRequest = new SignRequest({
       teacherId,
@@ -220,10 +222,41 @@ router.post("/fetch-data", async (req, res) => {
           res.json({ success: false, message: "No File Found" });
           return;
         } else {
-          res.sendFile(
-            path.join(__dirname, `..\\` + request[0].fileLocation[fileIndex])
-          );
-          return;
+          const filePath = request[0].fileLocation[fileIndex];
+          console.log(filePath);
+          const ext = filePath.split(".").pop();
+          if (ext === "pdf") {
+            console.log("Send pdf");
+            return res.sendFile(path.join(__dirname, `..\\` + filePath));
+          } else {
+            const convertedFilePath = filePath + ".pdf";
+            try {
+              if (fs.existsSync(convertedFilePath)) {
+                console.log("File Converted Before");
+                return res.sendFile(
+                  path.join(__dirname, `..\\` + convertedFilePath)
+                );
+              } else {
+                console.log("Convert File Now!");
+                const convertRes = await convertMSOfficeToPDF(filePath);
+                // console.log(convertRes);
+                if (convertRes.success) {
+                  return res.sendFile(
+                    path.join(__dirname, `..\\` + convertedFilePath)
+                  );
+                } else {
+                  res
+                    .status(500)
+                    .json({ success: false, message: "Internal server error" });
+                }
+              }
+            } catch (e) {
+              console.log(e);
+              res
+                .status(500)
+                .json({ success: false, message: "Internal server error" });
+            }
+          }
         }
       } catch (e) {
         console.log(e);
