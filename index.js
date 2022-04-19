@@ -6,7 +6,7 @@ const morgan = require("morgan");
 const { authenticateRequest } = require("./middleware/index");
 const signRequestRouter = require("./route/signRequest");
 const deleteFile = require("./util/deleteSignedOrExpired");
-const CronJob = require("cron").CronJob;
+// const CronJob = require("cron").CronJob;
 const app = express();
 
 connectDB();

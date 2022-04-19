@@ -29,8 +29,8 @@ jpM+tWkcujE4shCHnhMVxh4=
 -----END PRIVATE KEY-----`;
 // console.log(privateKey);
 const data = {
-  id: "62552341d9a1291dcea14a92",
-  teacherId: "1235",
+  id: "625e76cd43d3acdd7a9fcdee",
+  teacherId: "UngTest1",
   teacherCertificate: {
     pk: "123",
     params: {
@@ -38,23 +38,23 @@ const data = {
     },
   },
   fileHash: [
-    "29e5dee2f10305de8834fde9466a9232e2603c942c8910258108e1ff31cd097a",
-    "686b08c77ae43611e7fad7ffdd20338a739abf6ee298a8727e7866c51505cabd",
-    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "756145ae4fb5c408efd56fb1969d0b9cb7b63086efe01e7197b828d60a956543",
+    "060859c01ae6ba3cb2e1ae0f09605ec2f63a836086eb186a7f7e51b532cbd9f2",
+    "f85f0fcb3762061125eb740f76f3e2f62176e33e72c0570196a207785bc7c62b",
   ],
   fileOriginalName: [
-    "B%EF%BF%BDn%20sao%20c%EF%BF%BDa%20KHMT-Project%202.%20Vi%20Minh%20Hi%EF%BF%BDu.%202020.docx.pdf",
-    "B%EF%BF%BDn%20sao%20c%EF%BF%BDa%20KHMT-Project%202.%20Vi%20Minh%20Hi%EF%BF%BDu.%202020.docx.pdf",
-    "B%EF%BF%BDn%20sao%20c%EF%BF%BDa%20KHMT-Project%202.%20Vi%20Minh%20Hi%EF%BF%BDu.%202020.docx.pdf",
+    "Test-signed.pdf",
+    "digitalsignatures4PDF20130304.pdf",
+    "%10%EF%BF%BD-THI-TN-M%EF%BF%BDN-%10LCMVN-20202.pdf",
   ],
   docCount: 3,
-  createdAt: "2022-04-12T06:57:30.440Z",
-  expiredAt: "2022-04-12T07:57:30.440Z",
+  createdAt: "2022-04-19T08:26:20.593Z",
+  expiredAt: "2022-04-19T13:26:20.593Z",
   params: {
     a: 12,
     b: "36",
   },
-  salt: "71fdfc7be2a85146804461eb5b0d767d05ba6e7fcf088af3ea44aab70db823f7",
+  salt: "e82efd9016b740515d1da80375c6b137e46d0631248fb70c3b6c4b95b7e5a963",
 };
 const token = jwt.sign(
   { exp: Math.floor(Date.now() / 1000) + 60 * 2, data },

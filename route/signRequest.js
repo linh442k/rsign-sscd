@@ -4,6 +4,7 @@ const SignRequest = require("../model/SignRequest");
 const ObjectId = require("mongodb").ObjectID;
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs")
 const {
   uniqueFileNameGen,
   validateSignRequest,
@@ -11,7 +12,10 @@ const {
   saltGen,
   verifyToken,
 } = require("../util/index");
-
+const base64encode  = (file) => {
+    var body = fs.readFileSync(file);
+    return body.toString("base64")
+}
 var storage = multer.diskStorage({
   destination: function (req, file, callback) {
     callback(null, "./document");
@@ -220,10 +224,25 @@ router.post("/fetch-data", async (req, res) => {
           res.json({ success: false, message: "No File Found" });
           return;
         } else {
-          res.sendFile(
-            path.join(__dirname, `..\\` + request[0].fileLocation[fileIndex])
-          );
-          return;
+          // res.sendFile(
+          //   path.join(__dirname, `..\\` + request[0].fileLocation[fileIndex])
+          // );
+          // return;
+          const file = path.join(__dirname, `..\\` + request[0].fileLocation[fileIndex])
+          res.json({
+            success: true,
+            file: base64encode(file)
+          })
+
+          // fs.readFile(file, (err, data)=>{
+          //   if(err){
+          //     console.log(err)
+          //     res.status(500)
+          //   }else{
+          //     res.setHeader("ContentType", "application/pdf")
+          //     res.end(data)
+          //   }
+          // })
         }
       } catch (e) {
         console.log(e);
