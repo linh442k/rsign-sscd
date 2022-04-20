@@ -37,7 +37,7 @@ const SignRequestSchema = new Schema({
   },
   expiredAt: {
     type: Date,
-    default: Date.now() + 60 * 60 * 1000,
+    default: Date.now() + 5 *60 * 60 * 1000,
   },
   params: {
     type: Object,
