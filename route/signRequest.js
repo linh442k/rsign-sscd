@@ -4,13 +4,14 @@ const SignRequest = require("../model/SignRequest");
 const ObjectId = require("mongodb").ObjectID;
 const multer = require("multer");
 const path = require("path");
-const fs = require("fs")
+const fs = require("fs");
 const {
   uniqueFileNameGen,
   validateSignRequest,
   hashFile,
   saltGen,
   verifyToken,
+  convertMSOfficeToPDF,
 } = require("../util/index");
 const base64encode  = (file) => {
     var body = fs.readFileSync(file);
@@ -54,7 +55,7 @@ router.post("/create", handleFileUpload.array("files"), async (req, res) => {
   for (var i = 0; i < docCount; i++) {
     fileOriginalName.push(encodeURI(req.files[i].originalname));
   }
-  console.log(fileOriginalName);
+  // console.log(fileOriginalName);
   try {
     const newSignRequest = new SignRequest({
       teacherId,
@@ -224,25 +225,75 @@ router.post("/fetch-data", async (req, res) => {
           res.json({ success: false, message: "No File Found" });
           return;
         } else {
-          // res.sendFile(
-          //   path.join(__dirname, `..\\` + request[0].fileLocation[fileIndex])
-          // );
-          // return;
-          const file = path.join(__dirname, `..\\` + request[0].fileLocation[fileIndex])
-          res.json({
+// <<<<<<< feature/convert-ms-office
+          const filePath = request[0].fileLocation[fileIndex];
+          console.log(filePath);
+          const ext = filePath.split(".").pop();
+          if (ext === "pdf") {
+            console.log("Send pdf");
+//             return res.sendFile(path.join(__dirname, `..\\` + filePath));
+            return res.json({
             success: true,
-            file: base64encode(file)
+            file: base64encode(path.join(__dirname, `..\\` + filePath))
           })
+          } else {
+            const convertedFilePath = filePath + ".pdf";
+            try {
+              if (fs.existsSync(convertedFilePath)) {
+                console.log("File Converted Before");
+//                 return res.sendFile(
+//                   path.join(__dirname, `..\\` + convertedFilePath)
+//                 );
+                return res.json({
+            success: true,
+            file: base64encode(path.join(__dirname, `..\\` + convertedFilePath))
+          })
+              } else {
+                console.log("Convert File Now!");
+                const convertRes = await convertMSOfficeToPDF(filePath);
+                // console.log(convertRes);
+                if (convertRes.success) {
+//                   return res.sendFile(
+//                     path.join(__dirname, `..\\` + convertedFilePath)
+//                   );
+                  return res.json({
+            success: true,
+            file: base64encode(path.join(__dirname, `..\\` + convertedFilePath))
+          })
+                } else {
+                  res
+                    .status(500)
+                    .json({ success: false, message: "Internal server error" });
+                }
+              }
+            } catch (e) {
+              console.log(e);
+              res
+                .status(500)
+                .json({ success: false, message: "Internal server error" });
+            }
+          }
+// =======
+//           // res.sendFile(
+//           //   path.join(__dirname, `..\\` + request[0].fileLocation[fileIndex])
+//           // );
+//           // return;
+//           const file = path.join(__dirname, `..\\` + request[0].fileLocation[fileIndex])
+//           res.json({
+//             success: true,
+//             file: base64encode(file)
+//           })
 
-          // fs.readFile(file, (err, data)=>{
-          //   if(err){
-          //     console.log(err)
-          //     res.status(500)
-          //   }else{
-          //     res.setHeader("ContentType", "application/pdf")
-          //     res.end(data)
-          //   }
-          // })
+//           // fs.readFile(file, (err, data)=>{
+//           //   if(err){
+//           //     console.log(err)
+//           //     res.status(500)
+//           //   }else{
+//           //     res.setHeader("ContentType", "application/pdf")
+//           //     res.end(data)
+//           //   }
+//           // })
+// >>>>>>> main
         }
       } catch (e) {
         console.log(e);
