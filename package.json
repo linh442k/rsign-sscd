@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@pdftron/pdfnet-node": "^9.2.0-1",
+    "argon2": "^0.28.5",
     "cors": "^2.8.5",
     "cron": "^1.8.2",
     "dotenv": "^16.0.0",

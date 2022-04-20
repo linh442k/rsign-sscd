@@ -98,12 +98,13 @@ const validateSignRequest = (req) => {
       valid: false,
       message: "Invalid File(s)",
     };
-  } else if (typeof req.body.teacherId !== "string") {
-    return {
-      valid: false,
-      message: "Invalid Teacher Id",
-    };
   }
+  // } else if (typeof req.body.teacherId !== "string") {
+  //   return {
+  //     valid: false,
+  //     message: "Invalid Teacher Id",
+  //   };
+  // }
   // else if (typeof req.body.teacherCert !== "object") {
   //   return {
   //     valid: false,

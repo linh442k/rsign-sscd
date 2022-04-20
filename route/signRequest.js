@@ -1,10 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const SignRequest = require("../model/SignRequest");
+const jwt = require("jsonwebtoken");
 const ObjectId = require("mongodb").ObjectID;
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const { authenticateRequest } = require("../middleware/index");
+const User = require("../model/User");
 const {
   uniqueFileNameGen,
   validateSignRequest,
@@ -13,10 +16,10 @@ const {
   verifyToken,
   convertMSOfficeToPDF,
 } = require("../util/index");
-const base64encode  = (file) => {
-    var body = fs.readFileSync(file);
-    return body.toString("base64")
-}
+const base64encode = (file) => {
+  var body = fs.readFileSync(file);
+  return body.toString("base64");
+};
 var storage = multer.diskStorage({
   destination: function (req, file, callback) {
     callback(null, "./document");
@@ -30,14 +33,32 @@ var storage = multer.diskStorage({
 });
 const handleFileUpload = multer({ storage: storage });
 
+// router.use(authenticateRequest);
 router.post("/create", handleFileUpload.array("files"), async (req, res) => {
+  const authHeader = req.header("Authorization");
+  const token = authHeader && authHeader.split(" ")[1];
+
+  if (!token)
+    return res
+      .status(401)
+      .json({ success: false, message: "Access token not found" });
+
+  var teacherId = "";
+  try {
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN);
+    teacherId = decoded.teacherId;
+  } catch (error) {
+    console.log(error);
+    res.status(403).json({ success: false, message: "Invalid token" });
+  }
+
   const validateRequest = validateSignRequest(req);
   if (!validateRequest.valid)
     return res
       .status(400)
       .json({ success: false, message: validateRequest.message });
 
-  const teacherId = req.body.teacherId;
+  // const teacherId = req.teacherId;
   const fileHash = req.files.map((file) => hashFile(file.path));
   const docCount = req.files.length;
   const params =
@@ -80,8 +101,26 @@ router.post("/create", handleFileUpload.array("files"), async (req, res) => {
 
 router.post("/fetch-data", async (req, res) => {
   // must have teacherId from header
-  const teacherId =
-    typeof req.body.teacherId !== "undefined" ? req.body.teacherId : "123";
+
+  const authHeader = req.header("Authorization");
+  const token = authHeader && authHeader.split(" ")[1];
+
+  if (!token)
+    return res
+      .status(401)
+      .json({ success: false, message: "Access token not found" });
+
+  var teacherId = "";
+  try {
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN);
+    teacherId = decoded.teacherId;
+  } catch (error) {
+    console.log(error);
+    res.status(403).json({ success: false, message: "Invalid token" });
+  }
+
+  // const teacherId =
+  // typeof req.teacherId !== "undefined" ? req.teacherId : "123";
   const status = typeof req.body.status !== "undefined" ? req.body.status : "";
   const signRequestId =
     typeof req.body.signRequestId !== "undefined" ? req.body.signRequestId : "";
@@ -225,41 +264,45 @@ router.post("/fetch-data", async (req, res) => {
           res.json({ success: false, message: "No File Found" });
           return;
         } else {
-// <<<<<<< feature/convert-ms-office
+          // <<<<<<< feature/convert-ms-office
           const filePath = request[0].fileLocation[fileIndex];
           console.log(filePath);
           const ext = filePath.split(".").pop();
           if (ext === "pdf") {
             console.log("Send pdf");
-//             return res.sendFile(path.join(__dirname, `..\\` + filePath));
+            //             return res.sendFile(path.join(__dirname, `..\\` + filePath));
             return res.json({
-            success: true,
-            file: base64encode(path.join(__dirname, `..\\` + filePath))
-          })
+              success: true,
+              file: base64encode(path.join(__dirname, `..\\` + filePath)),
+            });
           } else {
             const convertedFilePath = filePath + ".pdf";
             try {
               if (fs.existsSync(convertedFilePath)) {
                 console.log("File Converted Before");
-//                 return res.sendFile(
-//                   path.join(__dirname, `..\\` + convertedFilePath)
-//                 );
+                //                 return res.sendFile(
+                //                   path.join(__dirname, `..\\` + convertedFilePath)
+                //                 );
                 return res.json({
-            success: true,
-            file: base64encode(path.join(__dirname, `..\\` + convertedFilePath))
-          })
+                  success: true,
+                  file: base64encode(
+                    path.join(__dirname, `..\\` + convertedFilePath)
+                  ),
+                });
               } else {
                 console.log("Convert File Now!");
                 const convertRes = await convertMSOfficeToPDF(filePath);
                 // console.log(convertRes);
                 if (convertRes.success) {
-//                   return res.sendFile(
-//                     path.join(__dirname, `..\\` + convertedFilePath)
-//                   );
+                  //                   return res.sendFile(
+                  //                     path.join(__dirname, `..\\` + convertedFilePath)
+                  //                   );
                   return res.json({
-            success: true,
-            file: base64encode(path.join(__dirname, `..\\` + convertedFilePath))
-          })
+                    success: true,
+                    file: base64encode(
+                      path.join(__dirname, `..\\` + convertedFilePath)
+                    ),
+                  });
                 } else {
                   res
                     .status(500)
@@ -273,27 +316,27 @@ router.post("/fetch-data", async (req, res) => {
                 .json({ success: false, message: "Internal server error" });
             }
           }
-// =======
-//           // res.sendFile(
-//           //   path.join(__dirname, `..\\` + request[0].fileLocation[fileIndex])
-//           // );
-//           // return;
-//           const file = path.join(__dirname, `..\\` + request[0].fileLocation[fileIndex])
-//           res.json({
-//             success: true,
-//             file: base64encode(file)
-//           })
+          // =======
+          //           // res.sendFile(
+          //           //   path.join(__dirname, `..\\` + request[0].fileLocation[fileIndex])
+          //           // );
+          //           // return;
+          //           const file = path.join(__dirname, `..\\` + request[0].fileLocation[fileIndex])
+          //           res.json({
+          //             success: true,
+          //             file: base64encode(file)
+          //           })
 
-//           // fs.readFile(file, (err, data)=>{
-//           //   if(err){
-//           //     console.log(err)
-//           //     res.status(500)
-//           //   }else{
-//           //     res.setHeader("ContentType", "application/pdf")
-//           //     res.end(data)
-//           //   }
-//           // })
-// >>>>>>> main
+          //           // fs.readFile(file, (err, data)=>{
+          //           //   if(err){
+          //           //     console.log(err)
+          //           //     res.status(500)
+          //           //   }else{
+          //           //     res.setHeader("ContentType", "application/pdf")
+          //           //     res.end(data)
+          //           //   }
+          //           // })
+          // >>>>>>> main
         }
       } catch (e) {
         console.log(e);
@@ -313,7 +356,34 @@ router.post("/fetch-data", async (req, res) => {
 });
 
 router.post("/sign", async (req, res) => {
-  const certificate = Buffer.from(process.env.TEMP_PUBLIC_KEY);
+  const authHeader = req.header("Authorization");
+  const token = authHeader && authHeader.split(" ")[1];
+
+  if (!token)
+    return res
+      .status(401)
+      .json({ success: false, message: "Access token not found" });
+
+  var teacherIdTmp = "";
+  try {
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN);
+    teacherIdTmp = decoded.teacherId;
+  } catch (error) {
+    console.log(error);
+    res.status(403).json({ success: false, message: "Invalid token" });
+  }
+
+  var certificate = "";
+  try {
+    const user = await User.findOne({ username: teacherIdTmp });
+    certificate = user.devicePub;
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+  // return res.end();
+  // const certificate = Buffer.from(process.env.TEMP_PUBLIC_KEY);
+
   const signature = req.body.signToken;
   const verifyResult = verifyToken(signature, certificate);
   // console.log(verifyResult);
@@ -330,6 +400,12 @@ router.post("/sign", async (req, res) => {
       salt,
       params,
     } = verifyResult.value.data;
+    if (teacherId !== teacherIdTmp) {
+      return res.status(400).json({
+        success: false,
+        message: "Not Authenticate",
+      });
+    }
     // console.log(verifyResult.value.data);
     // return res.send("test");
     const currentTime = Date.now();

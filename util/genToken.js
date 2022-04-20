@@ -1,36 +1,9 @@
 const jwt = require("jsonwebtoken");
-const privateKey = `-----BEGIN PRIVATE KEY-----
-MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDIkYtemahcGyl/
-yUA0ZXs6zsfGnsOmNbAxK2G08pkJZLqV+OFjbbCxYS+EusCzcet6AKLvmVaqv9tJ
-c6CA9v+gbCaR+NmC3QxY5Imh0rhZuiBPC3XS1Iv6ZIc935U09TzccZLCyCESPlH2
-CIByMrpo7UCtQfZ0VzY92jZx34ywFyIFkKPi5ua2Jml3YVpPt42wWkVpQH8/Qhlg
-xOsBRtvcP0pkW/RIKGQn7+d5Snmix+WQn9y1RiNXG0xT8dUOaikluDpFYqLjYmWQ
-W9RYcJkavaa32RfKlASEKH3qK90Gz/reCuGihuDVVgaWUXGnz6VYNlHfrSDDtEiW
-9Wu57uEdAgMBAAECggEBAKQmYj9BWQZRAKziBBcd+zYNKHnJVG0CwbnsPGJArrl+
-ZCr771NV4ee6l4503eO/V66ZOMEJ6WGD9i/uXy1NebdM7GBJn5M34LQcDvyPHmvp
-JiorQfoUFKAQiJM+Grql/3KXzTp3WoG42ZGYMa/FDsVzb5ydQNzEx9LldevKvzUZ
-tsdlLzKJRR47dRhcR5/cL/+cEV3nRTw6WfuaCddToQkLf5TwMIqbwpLIqDfyo8jq
-1DFpdWznADGZEQ56iGZt1Aw9tKheCym8JLrj05yafC30H5viVd/4CTfw+ZMNPeRM
-H73hSK4yp4MdCJ8dUbho20j3+jY7KXo5OjvKLfZsYU0CgYEA4/bTVqRead5UbjOQ
-7yjmSbbg0kDdbATwplKP4C50m1gVuA+jzPuC/6S/xN+aXrwQS/2m9otz+oY34Slo
-LT1hB8fhhHg/zqwLAdFLKS0iH1Voo+PLZy54CowYxQr2aIH2cpg4RUMTg7QPBcUZ
-tPtCjnXbpgMAgSvSGfpihdOrK5sCgYEA4TwzZwdFarQz4ohyEI2exkTRYmyj4AXG
-ru5JVFZsx7BhS847VkspB/IZC1IFFOxJ9nsTjlshuNLUZAEbVkhWCsk20PVVjons
-kRtr3/p5rij31oqP0TxBz0peK61kFMYEjyQM0Ulv0G7Y8+HXfS/s1qcAuzrBI25i
-ndoM9GV8vacCgYBUmu+2sUxFGHnXaJX63QATDaeFAQPsqiyyXeP9/N/UI63z4QIW
-+qWUwY1WwPInBL87pMlJqVoC+btVequqVqRjYeCl7Icp6hovs4CkqJaIcIdkhA+i
-nNF6gKJUxwvKn6lawHnp4sokUDhfGNbAn5wFCWLayzRtvFi+wXm9V2CozwKBgFct
-S9/2yoFwWhy2HyAVEH1BKaHk1tDgq3QNusgv406vEBmdKw5NbQYsSFE/X8QnaMFE
-Bd+1minFQHusif4tZVArbVIXgxP2gl/vsyMv+WTVaofZfazIm9g1uplBNVltA1q7
-41ImEGcmYEaVBSjpIcw7O2c8aIDkOrtKKHV3yn5FAoGATfkpRBjFHidKCbhqoowf
-kwZnyu+6a8YMQiOd8OwH6Wl3DZt8dV9wPcRSkM+VyKJ9sE/gUaB09i6TodZkx0Ka
-eLtFHVjIyFF1L2Arjf1dFLB9PgQjQw8VaPZXlfeY/DnCYex63d1KM+/i/Md2RoSM
-jpM+tWkcujE4shCHnhMVxh4=
------END PRIVATE KEY-----`;
+const privateKey = `-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDNAM/SwAdYK1hV\nuPWAnAGfAnbf3EgTzWN/cd0Mpd+4zb4WXi2xfZG8l8jfFtiNxNE7Vp03ewp8zmNc\nSxfI+zOLN5pNQrp3qxvbjtvT7kZMAFN0QaQHfyb75pUwiG90obcIGqsmqrNntsYV\nz31X+7yhgSirU42l7FT2kWYeKwpERgT5kqov6D8N16QANF/g1USEokajauJstIiD\nurNaNMjJ7RjFZ0KrJLYkmcvCiJv4Of2mKe+9d0ykrHP3ylWDkAFxOEadrwes9vCz\n7NKU38u4WFqVyOY9Y1fhya9qusQSTgZmJY16xw4Nu1ocOfnusdada0WzwjcNNZoT\njXOsbGGhAgMBAAECggEAd4qppXNk1P0xnYslXcGbEGYXe6KwRRvXkVGMXPu84b7X\nwaNZcc6PVTINaEmiLck/WSLAusF89BpFxmPjksco312lFLh8k5uruvQrLAId6+Ok\nxn4gcF6tFOb4yDxHAfPrD0a91uZjh28FQ2Ki7NNWw7bVSFKInuCZCs7uhVkDu5st\nfpFkw2rGxp8y+ZKemX/SDXs0y/tLEAO0yZxUKD2TJe2AnSXNv72OcXXf71wc+/kv\nt1d27rxcNnTrfU80nVm2kGQ/RGYsLfhSFJH+HcYAAhB8HYgCY3ihMsSGWaIZBOdF\nH/4bvK7ujwkM3hp2obDK29DfojRHzwMcfbEeoFBRoQKBgQDwcwHfyOghro07f1/r\nrlYdac5ozVCHS8Z/gY6pd1a+dgmKg38B8f/4LoL9oi9dvUpTnpIJqQ8xrzri8nnR\nEJIoBYRXdggyLUn1DOn34FjtPDAInqUUmKbPWGmGkIzObu/OvkC189XnE5ozujGV\nVtfpvZgYtaCJkUZ98pA9dFccCwKBgQDaQvE7BDyoKUkOycg79CDdKyMqJ3PALWyw\nqAalzYbhTssg3L1cf9VjIfNRtWjBT6JczYHUyDuoyv4ezib43rgMel4jghNL57ez\nYVET8OUz2obCFtZvcW4094TBD3+qrBnuFN/i+gkjj5hO5xn+DCVLzh17bZKh1T/L\nCqh09qgYgwKBgQDLE+c2UWG06M7BvH+P9ysmJnG9VAK6ckZQ9GRAPtmVfO3r/cls\nJC7TNr1NaAhnPHMlEp026YE6rkum17II390BTj+K+tZLQrLe86w7vVB99UKAVTUJ\noy/nmT1u+HDj/RAu5cKTqkAzrPukypIMFk+/S3DFFcljxr3pq88lCDh2JwKBgDkY\nefJuUU/MPQhZUMAeRNqWhkRovabwOxabXeHRug8Ghay7Ee44oqGkJ/qf8h9fraGJ\nQQVgu/qT35Y/Z4KDALKC8E1poZKhszSBqKwGwG6oI8hyIPZWPfYtKdU3MLZ8/uuB\nGnBN6EYdMkKxweLrWnZSHPRE3a7oEiATUa4HOEHxAoGBAK/voA/y2KbU52WG6rd4\npTJadqnnY3uNBVb8RLCfMdyljMgUMLCkkJOHTWRU4hYaM4QGifdjjJEuU+ORciFe\n7r9dzPDYA6nB7KtgMbXOeB3AwR84rKayvlIeGGsk+uGDmLD0j2ItPuoXC3oyOupy\nKeYQmvsfILv2he9xF94JzkI/\n-----END PRIVATE KEY-----\n`;
 // console.log(privateKey);
 const data = {
-  id: "625e76cd43d3acdd7a9fcdee",
-  teacherId: "UngTest1",
+  id: "625fc511f5791050185002c8",
+  teacherId: "linh",
   teacherCertificate: {
     pk: "123",
     params: {
@@ -38,23 +11,17 @@ const data = {
     },
   },
   fileHash: [
-    "756145ae4fb5c408efd56fb1969d0b9cb7b63086efe01e7197b828d60a956543",
-    "060859c01ae6ba3cb2e1ae0f09605ec2f63a836086eb186a7f7e51b532cbd9f2",
-    "f85f0fcb3762061125eb740f76f3e2f62176e33e72c0570196a207785bc7c62b",
+    "5280c646d838fe26b41809fcccd7b7f5e07ec037dd322c125dcc7262806c1a1b",
   ],
-  fileOriginalName: [
-    "Test-signed.pdf",
-    "digitalsignatures4PDF20130304.pdf",
-    "%10%EF%BF%BD-THI-TN-M%EF%BF%BDN-%10LCMVN-20202.pdf",
-  ],
-  docCount: 3,
-  createdAt: "2022-04-19T08:26:20.593Z",
-  expiredAt: "2022-04-19T13:26:20.593Z",
+  fileOriginalName: ["movie%20list.docx"],
+  docCount: 1,
+  createdAt: "2022-04-20T08:32:13.535Z",
+  expiredAt: "2022-04-20T13:32:13.535Z",
   params: {
     a: 12,
     b: "36",
   },
-  salt: "e82efd9016b740515d1da80375c6b137e46d0631248fb70c3b6c4b95b7e5a963",
+  salt: "64cc373202185fbf3e5d1eb30c58970c02222174bc798e7b67d5f74fb7461936",
 };
 const token = jwt.sign(
   { exp: Math.floor(Date.now() / 1000) + 60 * 2, data },

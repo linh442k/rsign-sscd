@@ -5,6 +5,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const { authenticateRequest } = require("./middleware/index");
 const signRequestRouter = require("./route/signRequest");
+const authenticateUserRouter = require("./route/authenticateUser");
 const testRouter = require("./route/test");
 const {
   deleteFileByTeacherId,
@@ -24,15 +25,15 @@ connectDB();
 // );
 // periodicallyDeleteFile.start();
 // deleteFile();
-setTimeout(() => deleteFileByTeacherId("linh"), 2000);
+// setTimeout(() => deleteFileByTeacherId("linh"), 2000);
 
 app.use(cors());
 app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
-app.all("*", authenticateRequest);
+// app.all("*", authenticateRequest);
 app.use("/api/sign-request", signRequestRouter);
-
+app.use("/api/authenticate", authenticateUserRouter);
 app.use("/test", testRouter);
 
 const PORT = process.env.PORT || 8000;
